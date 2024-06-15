@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const deliveryPersonRoutes = require("./routes/deliveryPersonRoutes");
+const auth = require("./middleware/auth");
+const cookieParser = require("cookie-parser");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
@@ -12,6 +14,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Connect to MongoDB
 config.connectToDatabase();
@@ -39,7 +42,7 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 //Routes
-app.use("/api", deliveryPersonRoutes);
+app.use("/api", auth, deliveryPersonRoutes);
 
 app.get("/", (req, res) => res.send("API delivery is running"));
 
