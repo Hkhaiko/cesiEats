@@ -17,7 +17,7 @@ const deliveryPersonSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["pending", "accepted", "refused", "in_progress", "completed"],
+    enum: ["pending", "refused", "in_progress", "completed"],
     default: "inactive",
   },
   createdAt: {

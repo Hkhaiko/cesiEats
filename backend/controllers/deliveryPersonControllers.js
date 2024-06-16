@@ -1,125 +1,162 @@
 const DeliveryPerson = require("../models/deliveryPerson");
 const axios = require("axios");
+const dotenv = require("dotenv");
 
-// Créer un livreur
-exports.createDeliveryPerson = async (req, res) => {
+dotenv.config();
+
+const authServiceUrl = process.env.AUTH_SERVICE_URL;
+
+exports.createDelivery = async (req, res) => {
   try {
-    const newDeliveryPerson = new DeliveryPerson(req.body);
-    await newDeliveryPerson.save();
-    res.status(201).json({
-      message: "DeliveryPerson created successfully",
-      delivery: newDeliveryPerson,
-    });
+    const token = req.cookies.token;
+    const { name, email, password, phone, status } = req.body;
+    if (!token) {
+      return res.status(401).json({ msg: "No token, authorization denied" });
+    }
+    const response = await axios.post(
+      `${authServiceUrl}/delivery/register`,
+      { name, email, password, phone, status },
+      {
+        withCredentials: true,
+        headers: {
+          Cookie: `token=${token}`,
+        },
+      }
+    );
+    res.status(200).json(response.data);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-// Obtenir tous les livreurs
 exports.getAllDeliveryPersons = async (req, res) => {
   try {
-    const deliveryPersons = await DeliveryPerson.find();
-    res.status(200).json(deliveryPersons);
+    const token = req.cookies.token;
+    console.log(token);
+    if (!token) {
+      return res.status(401).json({ msg: "No token, authorization denied" });
+    }
+    console.log(authServiceUrl);
+    const response = await axios.get(
+      `${authServiceUrl}/delivery/delivery-persons`,
+      {},
+      {
+        withCredentials: true,
+        headers: {
+          Cookie: `token=${token}`,
+        },
+      }
+    );
+    res.status(200).json(response.data);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-// Obtenir un livreur par ID
 exports.getDeliveryPersonById = async (req, res) => {
   try {
-    const deliveryPerson = await DeliveryPerson.findById(req.params.id);
-    if (!deliveryPerson) {
-      return res.status(404).json({ message: "Delivery Person not found" });
+    const token = req.cookies.token;
+    const id = req.params.id;
+    console.log(token);
+    if (!token) {
+      return res.status(401).json({ msg: "No token, authorization denied" });
     }
-    res.status(200).json(deliveryPerson);
+    const response = await axios.get(
+      `${authServiceUrl}/delivery/delivery-persons/${id}`,
+      {},
+      {
+        withCredentials: true,
+        headers: {
+          Cookie: `token=${token}`,
+        },
+      }
+    );
+    res.status(200).json(response.data);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-// Mettre à jour le statut d'un livreur
 exports.updateDeliveryPersonStatus = async (req, res) => {
   try {
+    const token = req.cookies.token;
+    const deliveryPersonId = req.params.id;
     const { status } = req.body;
-    if (!["active", "inactive"].includes(status)) {
-      return res.status(400).json({ message: "Invalid status value" });
-    }
+    console.log(status);
 
-    const deliveryPerson = await DeliveryPerson.findByIdAndUpdate(
-      req.params.id,
+    if (!token) {
+      return res.status(401).json({ msg: "No token, authorization denied" });
+    }
+    console.log(
+      `${authServiceUrl}/delivery/delivery-persons/${deliveryPersonId}`
+    );
+    // Vérifier le livreur via le microservice Auth
+    const deliveryPersonResponse = await axios.patch(
+      `${authServiceUrl}/delivery/delivery-persons/${deliveryPersonId}`,
       { status: status },
-      { new: true, runValidators: true }
+      {
+        withCredentials: true,
+        headers: {
+          Cookie: `token=${token}`,
+        },
+      }
     );
-
-    if (!deliveryPerson) {
-      return res.status(404).json({ message: "Delivery Person not found" });
-    }
-
-    res.status(200).json(deliveryPerson);
+    res.status(200).json(deliveryPersonResponse.data);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-// Mettre à jour le statut d'un livreur
-exports.updateDeliveryPerson = async (req, res) => {
-  try {
-    const updatedDeliveryPerson = await DeliveryPerson.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
-    if (!updatedDeliveryPerson) {
-      return res.status(404).json({ message: "Delivery Person not found" });
-    }
-    res.status(200).json(updatedDeliveryPerson);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-exports.acceptDelivery = async (req, res) => {
-  try {
-    //deliveryId is the Id of order microservice
-    const { deliveryId, accept } = req.body;
-    const deliveryPerson = await DeliveryPerson.findById(req.params.id);
-    if (!deliveryPerson) {
-      return res.status(404).json({ message: "Delivery Person not found" });
-    }
-    const orderServiceUrl = `http://localhost:5002/api/orders/${deliveryId}`; // URL de l'API du microservice de commande
-    const response = await axios.get(orderServiceUrl);
-    console.log(response);
-
-    const delivery = await DeliveryPerson.findById(deliveryId);
-    if (!delivery) {
-      return res.status(404).json({ message: "Delivery not found" });
-    }
-
-    if (accept) {
-      delivery.status = "accepted";
-      delivery.deliveryPerson = deliveryPerson._id;
-    } else {
-      delivery.status = "refused";
-    }
-    await delivery.save();
-
-    res.status(200).json(delivery);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-// Supprimer un livreur
 exports.deleteDeliveryPerson = async (req, res) => {
   try {
-    const deletedDeliveryPerson = await DeliveryPerson.findByIdAndDelete(
-      req.params.id
-    );
-    if (!deletedDeliveryPerson) {
-      return res.status(404).json({ message: "Delivery Person not found" });
+    const token = req.cookies.token;
+    const deliveryPersonId = req.params.id;
+
+    if (!token) {
+      return res.status(401).json({ msg: "No token, authorization denied" });
     }
-    res.status(200).json({ message: "Delivery Person deleted successfully" });
+
+    console.log(
+      `${authServiceUrl}/delivery/delivery-persons/${deliveryPersonId}`
+    );
+    const deliveryPersonResponse = await axios.delete(
+      `${authServiceUrl}/delivery/delivery-persons/${deliveryPersonId}`,
+      {},
+      {
+        withCredentials: true,
+        headers: {
+          Cookie: `token=${token}`,
+        },
+      }
+    );
+    res.status(200).json(deliveryPersonResponse.data);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.updateDeliveryPerson = async (req, res) => {
+  try {
+    const token = req.cookies.token;
+    const id = req.params.id;
+    const { name, email, password, phone, status } = req.body;
+
+    console.log(`${authServiceUrl}/delivery/delivery-persons/${id}`);
+
+    if (!token) {
+      return res.status(401).json({ msg: "No token, authorization denied" });
+    }
+    const response = await axios.put(
+      `${authServiceUrl}/delivery/delivery-persons/${id}`,
+      { name, email, password, phone, status },
+      {
+        withCredentials: true,
+        headers: {
+          Cookie: `token=${token}`,
+        },
+      }
+    );
+    res.status(200).json(response.data);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

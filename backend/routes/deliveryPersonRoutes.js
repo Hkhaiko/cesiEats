@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const deliveryPersonControllers = require("../controllers/deliveryPersonControllers"); // Assurez-vous que le chemin est correct
+const deliveryPersonControllers = require("../controllers/deliveryPersonControllers");
 
 // Route pour récupérer les commandes d'un restaurant
 /**
@@ -43,31 +43,6 @@ const deliveryPersonControllers = require("../controllers/deliveryPersonControll
  *   name: DeliveryPerson
  *   description: The delivery person managing API
  */
-
-/**
- * @swagger
- * /api/delivery:
- *   post:
- *     summary: Create a new delivery person
- *     tags: [DeliveryPerson]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/DeliveryPerson'
- *     responses:
- *       201:
- *         description: The delivery person was successfully created
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/DeliveryPerson'
- *       400:
- *         description: Bad request
- */
-
-router.post("/delivery/", deliveryPersonControllers.createDeliveryPerson);
 
 /**
  * @swagger
@@ -121,47 +96,6 @@ router.get("/delivery/", deliveryPersonControllers.getAllDeliveryPersons);
  */
 
 router.get("/delivery/:id", deliveryPersonControllers.getDeliveryPersonById);
-
-/**
- * @swagger
- * /api/delivery/{id}/status:
- *   patch:
- *     summary: Update the status of a delivery person
- *     tags: [DeliveryPerson]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: The delivery person id
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               status:
- *                 type: string
- *                 enum: [active, inactive]
- *                 description: The status of the delivery person
- *     responses:
- *       200:
- *         description: The status of the delivery person was updated
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/DeliveryPerson'
- *       404:
- *         description: The delivery person was not found
- *       400:
- *         description: Invalid status value
- */
-router.patch(
-  "/delivery/:id/status",
-  deliveryPersonControllers.updateDeliveryPersonStatus
-);
 
 /**
  * @swagger
@@ -219,8 +153,8 @@ router.delete("/delivery/:id", deliveryPersonControllers.deleteDeliveryPerson);
 
 /**
  * @swagger
- * /api/delivery/{id}/accept-delivery:
- *   patch:
+ * /api/delivery/:id/accept-delivery:
+ *   post:
  *     summary: Accept or refuse a delivery
  *     tags: [DeliveryPerson]
  *     parameters:
@@ -251,9 +185,34 @@ router.delete("/delivery/:id", deliveryPersonControllers.deleteDeliveryPerson);
  *       400:
  *         description: Invalid request
  */
-router.patch(
-  "/delivery/:id/accept-delivery",
-  deliveryPersonControllers.acceptDelivery
+router.post(
+  "/delivery/:id/update-status",
+  deliveryPersonControllers.updateDeliveryPersonStatus
 );
+
+/**
+ * @swagger
+ * /api/delivery/register:
+ *   post:
+ *     summary: Create delivery persons
+ *     responses:
+ *       200:
+ *         description: The list of the delivery persons
+ *         content:
+ *           application/json:
+ */
+router.post("/delivery/register", deliveryPersonControllers.createDelivery);
+/**
+ * @swagger
+ * /api/delivery/:id:
+ *   put:
+ *     summary: Create delivery persons
+ *     responses:
+ *       200:
+ *         description: The list of the delivery persons
+ *         content:
+ *           application/json:
+ */
+router.put("/delivery/:id", deliveryPersonControllers.updateDeliveryPerson);
 
 module.exports = router;

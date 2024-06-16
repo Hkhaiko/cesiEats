@@ -30,7 +30,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: "http://localhost:5000/api",
+        url: "http://localhost:5003/api",
         description: "Local server",
       },
     ],
@@ -41,7 +41,7 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-//Routes
+//Secure Routes
 app.use("/api", auth, deliveryPersonRoutes);
 
 app.get("/", (req, res) => res.send("API delivery is running"));
