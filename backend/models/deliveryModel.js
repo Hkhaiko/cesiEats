@@ -25,10 +25,9 @@ const deliverySchema = new mongoose.Schema({
     enum: [
       "active",
       "inactive",
-      "pending",
       "accepted",
       "refused",
-      "in_progress",
+      "in-progress",
       "completed",
     ],
     default: "inactive",

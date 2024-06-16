@@ -6,7 +6,7 @@ dotenv.config();
 
 const createToken = (user) => {
   const payload = { user: { id: user.id } };
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "20h" });
 };
 
 exports.register = async (req, res) => {

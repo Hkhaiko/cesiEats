@@ -6,7 +6,7 @@ dotenv.config();
 
 const createToken = (user) => {
   const payload = { user: { id: user.id } };
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "20h" });
 };
 
 exports.register = async (req, res) => {
@@ -69,5 +69,88 @@ exports.login = async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
+  }
+};
+
+exports.getAllDeliveryPersons = async (req, res) => {
+  try {
+    const deliveryPersons = await Delivery.find();
+    res.status(200).json(deliveryPersons);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.getDeliveryPersonById = async (req, res) => {
+  try {
+    const deliveryPerson = await Delivery.findById(req.params.id);
+    if (!deliveryPerson) {
+      return res.status(404).json({ message: "Delivery Person not found" });
+    }
+    res.status(200).json(deliveryPerson);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.updateDeliveryPersonStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (
+      ![
+        "active",
+        "inactive",
+        "in-progress",
+        "completed",
+        "refused",
+        "completed",
+      ].includes(status)
+    ) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
+    const deliveryPerson = await Delivery.findByIdAndUpdate(
+      req.params.id,
+      { status: status },
+      { new: true, runValidators: true }
+    );
+    console.log("test");
+    if (!deliveryPerson) {
+      return res.status(404).json({ message: "Delivery Person not found" });
+    }
+
+    res.status(200).json(deliveryPerson);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.deleteDeliveryPerson = async (req, res) => {
+  try {
+    const deletedDeliveryPerson = await Delivery.findByIdAndDelete(
+      req.params.id
+    );
+    if (!deletedDeliveryPerson) {
+      return res.status(404).json({ message: "Delivery Person not found" });
+    }
+    res.status(200).json({ message: "Delivery Person deleted successfully" });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.updateDeliveryPerson = async (req, res) => {
+  try {
+    const updatedDeliveryPerson = await Delivery.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!updatedDeliveryPerson) {
+      return res.status(404).json({ message: "Delivery Person not found" });
+    }
+    res.status(200).json(updatedDeliveryPerson);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 };

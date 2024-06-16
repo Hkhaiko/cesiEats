@@ -5,8 +5,6 @@ dotenv.config();
 
 exports.verifyToken = (req, res) => {
   const token = req.cookies.token;
-  console.log(JSON.parse(JSON.stringify(req.headers)));
-
   console.log(
     `Verfy Token function from auth service works here your token : `,
     token
