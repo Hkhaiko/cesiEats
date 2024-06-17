@@ -10,16 +10,20 @@ const orderSchema = new Schema({
     type: String,
     required: true,
   },
+  deliveryId: {
+    type: String,
+    default: "not-yet",
+  },
   items: [
     {
       itemId: Schema.Types.ObjectId,
       name: String,
       quantity: Number,
-      price: Number,
+      price: String,
     },
   ],
   totalPrice: {
-    type: Number,
+    type: String,
     required: true,
   },
   status: {

@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const orderRoutes = require("./routes/orderRoutes");
+const auth = require("./middleware/auth");
 
 const config = require("./config/config");
 
@@ -16,6 +17,21 @@ config.connectToDatabase();
 
 //Routes
 app.use("/api", orderRoutes);
+
+// Example route to login and get a token
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const token = await login(email, password);
+    res.json({ token });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.get("/protected", auth, (req, res) => {
+  res.json({ msg: "This is a protected route", user: req.user });
+});
 
 app.get("/", (req, res) => res.send("API ORDERS is running"));
 
