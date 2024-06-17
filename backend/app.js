@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const deliveryPersonRoutes = require("./routes/deliveryPersonRoutes");
-const auth = require("./middleware/auth");
 const cookieParser = require("cookie-parser");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
@@ -42,7 +41,7 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 //Secure Routes
-app.use("/api", auth, deliveryPersonRoutes);
+app.use("/api", deliveryPersonRoutes);
 
 app.get("/", (req, res) => res.send("API delivery is running"));
 

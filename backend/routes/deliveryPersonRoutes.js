@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const deliveryPersonControllers = require("../controllers/deliveryPersonControllers");
+const auth = require("../middleware/auth");
 
 // Route pour récupérer les commandes d'un restaurant
 /**
@@ -61,7 +62,7 @@ const deliveryPersonControllers = require("../controllers/deliveryPersonControll
  *                 $ref: '#/components/schemas/DeliveryPerson'
  */
 
-router.get("/delivery/", deliveryPersonControllers.getAllDeliveryPersons);
+router.get("/delivery/", auth, deliveryPersonControllers.getAllDeliveryPersons);
 
 /**
  * @swagger
@@ -95,7 +96,11 @@ router.get("/delivery/", deliveryPersonControllers.getAllDeliveryPersons);
  *         description: Bad request
  */
 
-router.get("/delivery/:id", deliveryPersonControllers.getDeliveryPersonById);
+router.get(
+  "/delivery/:id",
+  auth,
+  deliveryPersonControllers.getDeliveryPersonById
+);
 
 /**
  * @swagger
@@ -128,7 +133,11 @@ router.get("/delivery/:id", deliveryPersonControllers.getDeliveryPersonById);
  *       400:
  *         description: Bad request
  */
-router.put("/delivery/:id", deliveryPersonControllers.updateDeliveryPerson);
+router.put(
+  "/delivery/:id",
+  auth,
+  deliveryPersonControllers.updateDeliveryPerson
+);
 
 /**
  * @swagger
@@ -149,7 +158,11 @@ router.put("/delivery/:id", deliveryPersonControllers.updateDeliveryPerson);
  *       404:
  *         description: The delivery person was not found
  */
-router.delete("/delivery/:id", deliveryPersonControllers.deleteDeliveryPerson);
+router.delete(
+  "/delivery/:id",
+  auth,
+  deliveryPersonControllers.deleteDeliveryPerson
+);
 
 /**
  * @swagger
@@ -185,8 +198,9 @@ router.delete("/delivery/:id", deliveryPersonControllers.deleteDeliveryPerson);
  *       400:
  *         description: Invalid request
  */
-router.post(
-  "/delivery/:id/update-status",
+router.patch(
+  "/delivery/:id",
+  auth,
   deliveryPersonControllers.updateDeliveryPersonStatus
 );
 
@@ -202,6 +216,8 @@ router.post(
  *           application/json:
  */
 router.post("/delivery/register", deliveryPersonControllers.createDelivery);
+router.post("/delivery/login", deliveryPersonControllers.login);
+
 /**
  * @swagger
  * /api/delivery/:id:
@@ -213,6 +229,11 @@ router.post("/delivery/register", deliveryPersonControllers.createDelivery);
  *         content:
  *           application/json:
  */
-router.put("/delivery/:id", deliveryPersonControllers.updateDeliveryPerson);
+router.put(
+  "/delivery/:id",
+  auth,
+  deliveryPersonControllers.updateDeliveryPerson
+);
+router.post("/delivery/logout", auth, deliveryPersonControllers.logout);
 
 module.exports = router;
