@@ -1,0 +1,27 @@
+/* src/pages/HomePage.css */
+
+.home-page {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding-top: 20px;
+  }
+  
+  .logo {
+    width: 100px;
+    height: auto;
+  }
+  
+  .card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-text {
+    font-size: 1.2rem;
+  }
+  
+  button {
+    border-radius: 10px;
+    font-size: 1.1rem;
+  }
+  
