@@ -2,11 +2,10 @@
 import React from 'react';
 import { Button, Card, Container, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
+import './HomePage.css';
 
 function HomePage() {
   const navigate = useNavigate();
-  let CookieId = Cookies.get('deliveryId');
 
   return (
     <Container className="home-page">
@@ -18,7 +17,7 @@ function HomePage() {
           <Card className="mb-3">
             <Card.Body>
               <Card.Text>Revenu</Card.Text>
-              <Card.Text className="text-success">{CookieId}</Card.Text>
+              <Card.Text className="text-success">+153,40 €</Card.Text>
             </Card.Body>
           </Card>
         </Col>
@@ -32,7 +31,7 @@ function HomePage() {
         </Col>
         <Col xs={12}>
           <Button variant="light" className="w-100 mb-3" onClick={() => navigate('/profile')}>Modifier Profil</Button>
-          <Button variant="light" className="w-100 mb-3" onClick={() => navigate('/orders')}>Historique des livraisons</Button>
+          <Button variant="light" className="w-100 mb-3"onClick={() => navigate('/order')}>Historique des livraisons</Button>
           <Button variant="light" className="w-100 mb-3">Code Parrainage</Button>
         </Col>
         <Col xs={12} className="text-center">
