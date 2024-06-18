@@ -22,8 +22,6 @@ const Login = () => {
       const response = await login(credentials);
       loginUser(response.data); // Utiliser le contexte pour enregistrer l'utilisateur
       alert("Login successful");
-      const userId = Cookies.get('deliveryId');
-      console.log('UserID from cookie:', userId);
       navigate("/"); // Rediriger vers la page d'accueil après connexion
     } catch (err) {
       console.error(err);
