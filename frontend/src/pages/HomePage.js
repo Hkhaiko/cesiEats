@@ -1,6 +1,6 @@
 // src/pages/HomePage.js
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Container, Row, Col, Spinner } from 'react-bootstrap'; // Importez Spinner ici
+import { Button, Card, Container, Row, Col, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
@@ -72,44 +72,41 @@ function HomePage() {
           )}
         </Col>
         {userData && (
-          <Col xs={12} className="text-center">
-            <div className="mb-4">
-              <strong>User Data:</strong> {JSON.stringify(userData)}
-            </div>
-          </Col>
+          <>
+            <Col xs={6} className="text-center">
+              <Card className="mb-3">
+                <Card.Body>
+                  <Card.Text>Revenu</Card.Text>
+                  <Card.Text className="text-success">{userData.income}</Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col xs={6} className="text-center">
+              <Card className="mb-3">
+                <Card.Body>
+                  <Card.Text>Score</Card.Text>
+                  <Card.Text>{userData.score}</Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col xs={12}>
+              <Button variant="light" className="w-100 mb-3" onClick={() => navigate('/profile')}>Modifier Profil</Button>
+              <Button variant="light" className="w-100 mb-3" onClick={() => navigate('/order')}>Historique des livraisons</Button>
+              <Button variant="light" className="w-100 mb-3">Code Parrainage</Button>
+            </Col>
+            <Col xs={12} className="text-center">
+              <Card className="mb-3">
+                <Card.Body>
+                  <Card.Text>Vous êtes actuellement</Card.Text>
+                  <Card.Text>{userData.status}</Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col xs={12}>
+              <Button variant="danger" className="w-100">PASSER HORS-LIGNE</Button>
+            </Col>
+          </>
         )}
-        <Col xs={6} className="text-center">
-          <Card className="mb-3">
-            <Card.Body>
-              <Card.Text>Revenu</Card.Text>
-              <Card.Text className="text-success">+153,40 €</Card.Text>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col xs={6} className="text-center">
-          <Card className="mb-3">
-            <Card.Body>
-              <Card.Text>Score</Card.Text>
-              <Card.Text>1260</Card.Text>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col xs={12}>
-          <Button variant="light" className="w-100 mb-3" onClick={() => navigate('/profile')}>Modifier Profil</Button>
-          <Button variant="light" className="w-100 mb-3" onClick={() => navigate('/order')}>Historique des livraisons</Button>
-          <Button variant="light" className="w-100 mb-3">Code Parrainage</Button>
-        </Col>
-        <Col xs={12} className="text-center">
-          <Card className="mb-3">
-            <Card.Body>
-              <Card.Text>Vous êtes actuellement</Card.Text>
-              <Card.Text>Actif</Card.Text>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col xs={12}>
-          <Button variant="danger" className="w-100">PASSER HORS-LIGNE</Button>
-        </Col>
       </Row>
     </Container>
   );

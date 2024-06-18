@@ -1,22 +1,97 @@
 // src/pages/ProfilePage.js
-import React, { useState } from 'react';
-import { Container, Row, Col, Button, Form, Card } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Container, Row, Col, Button, Form, Card, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import logo from '../img/logo.png'; // Chemin vers votre propre fichier de logo
-import profileIcon from '../img/logo.svg'; // Chemin vers votre propre fichier d'icône de profil
+import Cookies from 'js-cookie';
+import axios from 'axios';
+import logo from '../img/logo.png';
+import profileIcon from '../img/logo.svg';
 import './ProfilePage.css';
 
 function ProfilePage() {
   const navigate = useNavigate();
   const [isEditable, setIsEditable] = useState(false);
+  const [userId, setUserId] = useState(null);
+  const [userData, setUserData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    password: '', // Added password field
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const userIdFromCookie = Cookies.get('deliveryId');
+    if (userIdFromCookie) {
+      setUserId(userIdFromCookie);
+      fetchUserData(userIdFromCookie);
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchUserData = async (id) => {
+    try {
+      const response = await axios.get(`http://localhost:5003/api/delivery/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      });
+      setUserData(response.data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleEdit = () => {
     setIsEditable(true);
   };
 
-  const navigateToProfile = () => {
-    navigate('/profile');
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUserData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(`http://localhost:5003/api/delivery/${userId}`, userData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      });
+      setIsEditable(false);
+      alert('Profile updated successfully');
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Container className="profile-page text-center">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container className="profile-page text-center">
+        <p>Erreur lors du chargement des données utilisateur : {error}</p>
+      </Container>
+    );
+  }
 
   return (
     <Container className="profile-page">
@@ -25,7 +100,7 @@ function ProfilePage() {
           <img src={logo} alt="Logo" className="logo" />
         </Col>
         <Col xs={4} className="text-end">
-          <Button variant="link" className="profile-button" onClick={navigateToProfile}>
+          <Button variant="link" className="profile-button" onClick={() => navigate('/profile')}>
             <img src={profileIcon} alt="Profile" className="profile-icon" />
           </Button>
         </Col>
@@ -47,12 +122,15 @@ function ProfilePage() {
           <Card>
             <Card.Body>
               <Card.Title>Profile</Card.Title>
-              <Form>
+              <Form onSubmit={handleUpdate}>
                 <Form.Group controlId="formName" className="mb-3">
                   <Form.Label>Nom</Form.Label>
                   <Form.Control
                     type="text"
+                    name="name"
+                    value={userData.name}
                     placeholder="Entrez votre nom"
+                    onChange={handleInputChange}
                     disabled={!isEditable}
                   />
                 </Form.Group>
@@ -61,7 +139,10 @@ function ProfilePage() {
                   <Form.Label>Email</Form.Label>
                   <Form.Control
                     type="email"
+                    name="email"
+                    value={userData.email}
                     placeholder="Entrez votre email"
+                    onChange={handleInputChange}
                     disabled={!isEditable}
                   />
                 </Form.Group>
@@ -70,7 +151,22 @@ function ProfilePage() {
                   <Form.Label>Téléphone</Form.Label>
                   <Form.Control
                     type="text"
+                    name="phone"
+                    value={userData.phone}
                     placeholder="Entrez votre numéro de téléphone"
+                    onChange={handleInputChange}
+                    disabled={!isEditable}
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="formPassword" className="mb-3">
+                  <Form.Label>Mot de passe</Form.Label>
+                  <Form.Control
+                    type="password"
+                    name="password"
+                    value={userData.password}
+                    placeholder="Entrez votre mot de passe"
+                    onChange={handleInputChange}
                     disabled={!isEditable}
                   />
                 </Form.Group>
