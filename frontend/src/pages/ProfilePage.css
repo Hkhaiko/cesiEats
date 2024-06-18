@@ -1,0 +1,30 @@
+/* src/pages/ProfilePage.css */
+.profile-page {
+    padding: 20px;
+  }
+  
+  .logo {
+    width: 50px; /* Ajuster la taille du logo selon vos besoins */
+  }
+  
+  .profile-button .profile-icon {
+    width: 40px; /* Ajuster la taille de l'icône de profil selon vos besoins */
+  }
+  
+  .return-button {
+    width: 150px; /* Réduire la taille du bouton retour */
+  }
+  
+  .card {
+    margin-top: 20px;
+  }
+  
+  .card-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  
+  button {
+    font-weight: bold;
+  }
+  
