@@ -64,6 +64,11 @@ exports.login = async (req, res) => {
       secure: true,
       sameSite: "Strict",
     });
+    res.cookie("deliveryId", user.id, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+    });
 
     res.json({ msg: "Login successful", token });
   } catch (err) {

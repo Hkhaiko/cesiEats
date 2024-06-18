@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { login } from "../services/authService";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
@@ -21,6 +22,8 @@ const Login = () => {
       const response = await login(credentials);
       loginUser(response.data); // Utiliser le contexte pour enregistrer l'utilisateur
       alert("Login successful");
+      const userId = Cookies.get('deliveryId');
+      console.log('UserID from cookie:', userId);
       navigate("/"); // Rediriger vers la page d'accueil après connexion
     } catch (err) {
       console.error(err);
