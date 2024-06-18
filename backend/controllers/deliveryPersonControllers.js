@@ -1,4 +1,4 @@
-const DeliveryPerson = require("../models/deliveryPerson");
+const DeliveryPerson = require("../models/deliveryPersonModel");
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 
