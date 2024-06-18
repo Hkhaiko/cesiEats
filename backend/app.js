@@ -8,12 +8,18 @@ const swaggerUi = require("swagger-ui-express");
 
 const config = require("./config/config");
 
+
+const corsOptions = {
+  origin: "http://localhost:3000", // Le frontend tourne sur localhost:3001
+  credentials: true, // Permet d'inclure les cookies
+};
+
 const app = express();
 app.use(bodyParser.json());
 app.use(express.json());
-app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(cors(corsOptions));
 
 // Connect to MongoDB
 config.connectToDatabase();

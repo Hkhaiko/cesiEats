@@ -11,7 +11,7 @@ function HomePage() {
     <Container className="home-page">
       <Row className="justify-content-center mt-4">
         <Col xs={12} className="text-center">
-          <img src="logo.svg" alt="Logo" className="mb-4 logo" />
+          <img src="../img/logo.png" alt="Logo" className="mb-4 logo" />
         </Col>
         <Col xs={6} className="text-center">
           <Card className="mb-3">
