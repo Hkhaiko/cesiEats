@@ -1,21 +1,83 @@
-import React from 'react';
-import { Button, Card, Container, Row, Col } from 'react-bootstrap';
+// src/pages/HomePage.js
+import React, { useEffect, useState } from 'react';
+import { Button, Card, Container, Row, Col, Spinner } from 'react-bootstrap'; // Importez Spinner ici
 import { useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie'; // Import de js-cookie
+import Cookies from 'js-cookie';
+import axios from 'axios';
 import './HomePage.css';
-import logo from '../img/logo.png'; // Chemin vers votre propre fichier de logo
-import profileIcon from '../img/logo.svg'; // Chemin vers votre propre fichier d'icône de profil
 
 function HomePage() {
   const navigate = useNavigate();
-  const userId = Cookies.get('deliveryId'); // Récupérer l'ID utilisateur depuis les cookies
+  const [userId, setUserId] = useState(null);
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const userIdFromCookie = Cookies.get('deliveryId');
+    console.log('UserID from cookie:', userIdFromCookie);
+    if (userIdFromCookie) {
+      setUserId(userIdFromCookie);
+      fetchUserData(userIdFromCookie);
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchUserData = async (id) => {
+    try {
+      const response = await axios.get(`http://localhost:5003/api/delivery/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      });
+      setUserData(response.data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Container className="home-page text-center">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container className="home-page text-center">
+        <p>Erreur lors du chargement des données utilisateur : {error}</p>
+      </Container>
+    );
+  }
 
   return (
     <Container className="home-page">
       <Row className="justify-content-center mt-4">
         <Col xs={12} className="text-center">
-          <img src={logo} alt="Logo" className="mb-4 logo" />
+          <img src="../img/logo.png" alt="Logo" className="mb-4 logo" />
         </Col>
+        <Col xs={12} className="text-center">
+          {userId && (
+            <div className="mb-4">
+              <strong>User ID:</strong> {userId}
+            </div>
+          )}
+        </Col>
+        {userData && (
+          <Col xs={12} className="text-center">
+            <div className="mb-4">
+              <strong>User Data:</strong> {JSON.stringify(userData)}
+            </div>
+          </Col>
+        )}
         <Col xs={6} className="text-center">
           <Card className="mb-3">
             <Card.Body>
@@ -33,15 +95,9 @@ function HomePage() {
           </Card>
         </Col>
         <Col xs={12}>
-          <Button variant="light" className="w-100 mb-3" onClick={() => navigate('/profile')}>
-            Modifier Profil
-          </Button>
-          <Button variant="light" className="w-100 mb-3" onClick={() => navigate('/order')}>
-            Historique des livraisons
-          </Button>
-          <Button variant="light" className="w-100 mb-3">
-            Code Parrainage
-          </Button>
+          <Button variant="light" className="w-100 mb-3" onClick={() => navigate('/profile')}>Modifier Profil</Button>
+          <Button variant="light" className="w-100 mb-3" onClick={() => navigate('/order')}>Historique des livraisons</Button>
+          <Button variant="light" className="w-100 mb-3">Code Parrainage</Button>
         </Col>
         <Col xs={12} className="text-center">
           <Card className="mb-3">
@@ -52,16 +108,7 @@ function HomePage() {
           </Card>
         </Col>
         <Col xs={12}>
-          <Button variant="danger" className="w-100">
-            PASSER HORS-LIGNE
-          </Button>
-        </Col>
-        <Col xs={12} className="text-center mt-4">
-          <Card>
-            <Card.Body>
-              <Card.Text>ID Utilisateur : {userId}</Card.Text>
-            </Card.Body>
-          </Card>
+          <Button variant="danger" className="w-100">PASSER HORS-LIGNE</Button>
         </Col>
       </Row>
     </Container>

@@ -65,7 +65,7 @@ exports.login = async (req, res) => {
       sameSite: "Strict",
     });
     res.cookie("deliveryId", user.id, {
-      httpOnly: true,
+      httpOnly: false,
       secure: true,
       sameSite: "Strict",
     });
