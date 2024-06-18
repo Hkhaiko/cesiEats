@@ -32,6 +32,16 @@ const deliveryPersonSchema = new mongoose.Schema({
     ],
     default: "inactive",
   },
+  income: {
+    type: String,
+    required: true,
+    default: "0€",
+  },
+  score: {
+    type: String,
+    required: true,
+    default: "0",
+  },
   createdAt: {
     type: Date,
     default: Date.now,
