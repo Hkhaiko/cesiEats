@@ -95,20 +95,8 @@ function ProfilePage() {
 
   return (
     <Container className="profile-page">
-      <Row className="justify-content-center mb-3">
-        <Col xs={12} className="text-center">
-          <Button
-            variant="dark"
-            className="return-button mb-3"
-            onClick={() => navigate('/')}
-            style={{ fontWeight: 'bold', color: 'white' }}
-          >
-            Retour
-          </Button>
-        </Col>
-      </Row>
       <Row className="justify-content-center">
-        <Col xs={12} md={6} lg={4}>
+        <Col xs={12} md={10} lg={10}>
           <Card>
             <Card.Body>
               <Card.Title>Profile</Card.Title>

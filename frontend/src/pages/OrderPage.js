@@ -64,13 +64,6 @@ function OrderPage() {
 
   return (
     <Container className="order-page">
-      <Row className="justify-content-center mb-3">
-        <Col xs={12} className="text-center">
-          <Button variant="dark" className="w-100 mb-3" onClick={() => navigate('/')} style={{ fontWeight: 'bold', color: 'white' }}>
-            Retour
-          </Button>
-        </Col>
-      </Row>
       {orders.length === 0 ? (
         <Row className="justify-content-center">
           <Col xs={12} className="text-center">
