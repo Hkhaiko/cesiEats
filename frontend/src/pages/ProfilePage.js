@@ -4,11 +4,11 @@ import { Container, Row, Col, Button, Form, Card, Spinner } from 'react-bootstra
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import logo from '../img/logo.png';
-import profileIcon from '../img/logo.svg';
 import './ProfilePage.css';
 
 function ProfilePage() {
+  const logo ="logo.png"
+  const profileLogo="profile.svg"
   const navigate = useNavigate();
   const [isEditable, setIsEditable] = useState(false);
   const [userId, setUserId] = useState(null);
@@ -101,7 +101,7 @@ function ProfilePage() {
         </Col>
         <Col xs={4} className="text-end">
           <Button variant="link" className="profile-button" onClick={() => navigate('/profile')}>
-            <img src={profileIcon} alt="Profile" className="profile-icon" />
+            <img src={profileLogo} alt="Profile" className="profile-icon" />
           </Button>
         </Col>
       </Row>

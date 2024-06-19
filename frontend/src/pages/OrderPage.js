@@ -1,44 +1,43 @@
-// src/pages/OrderPage.js
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Spinner, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-// import axios from 'axios';
+import Cookies from 'js-cookie';
+import axios from 'axios';
 import './OrderPage.css';
-import logo from '../img/logo.png'; // Chemin vers votre propre fichier de logo
-import profileIcon from '../img/logo.svg'; // Chemin vers votre propre fichier d'icône de profil
 
 function OrderPage() {
+  const logo ="logo.png"
+  const profileLogo="profile.svg"
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Remplacer par votre propre URL de l'API
-    // const fetchOrders = async () => {
-    //   try {
-    //     const response = await axios.get('https://api.example.com/orders');
-    //     setOrders(response.data);
-    //   } catch (err) {
-    //     setError(err.message);
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // };
-
-    // fetchOrders();
-
-    // Données fictives pour les commandes
-    const mockOrders = [
-      { id: 1, duration: '30 min', distance: '5 km', revenue: 50.5 },
-      { id: 2, duration: '45 min', distance: '10 km', revenue: 75.0 },
-      { id: 3, duration: '20 min', distance: '3 km', revenue: 20.25 },
-      { id: 4, duration: '60 min', distance: '15 km', revenue: 100.0 },
-    ];
-
-    setOrders(mockOrders);
-    setLoading(false);
+    const userIdFromCookie = Cookies.get('deliveryId');
+    if (userIdFromCookie) {
+      fetchOrders(userIdFromCookie);
+    } else {
+      setLoading(false);
+      setError("User ID not found in cookies");
+    }
   }, []);
+
+  const fetchOrders = async (id) => {
+    try {
+      const response = await axios.get(`http://localhost:5003/api/delivery/history/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      });
+      setOrders(response.data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -71,7 +70,7 @@ function OrderPage() {
         </Col>
         <Col xs={4} className="text-end">
           <Button variant="link" className="profile-button" onClick={navigateToProfile}>
-            <img src={profileIcon} alt="Profile" className="profile-icon" />
+            <img src={profileLogo} alt="Profile" className="profile-icon" />
           </Button>
         </Col>
       </Row>
@@ -82,22 +81,31 @@ function OrderPage() {
           </Button>
         </Col>
       </Row>
-      {orders.map((order) => (
-        <Row className="justify-content-center mb-3" key={order.id}>
-          <Col xs={12} className="mb-3">
-            <Card>
-              <Card.Body>
-                <Card.Title className="order-id">Commande #{order.id}</Card.Title>
-                <Card.Text className="order-details">
-                  <div className="order-detail-item">Durée : {order.duration}</div>
-                  <div className="order-detail-item">Distance : {order.distance}</div>
-                  <div className="order-detail-item revenue">Revenus : {order.revenue.toFixed(2).replace('.', ',')} €</div>
-                </Card.Text>
-              </Card.Body>
-            </Card>
+      {orders.length === 0 ? (
+        <Row className="justify-content-center">
+          <Col xs={12} className="text-center">
+            <p>Aucune commande trouvée.</p>
           </Col>
         </Row>
-      ))}
+      ) : (
+        orders.map((order) => (
+          <Row className="justify-content-center mb-3" key={order._id}>
+            <Col xs={12} className="mb-3">
+              <Card>
+                <Card.Body>
+                  <Card.Title className="order-id">Commande #{order._id}</Card.Title>
+                  <Card.Text className="order-details">
+                    <div className="order-detail-item">Distance : {order.distance}</div>
+                    <div className="order-detail-item">Status : {order.status}</div>
+                    <div className="order-detail-item">Date de livraison : {new Date(order.deliveryDate).toLocaleDateString()}</div>
+                    <div className="order-detail-item revenue">Revenus : {parseFloat(order.price).toFixed(2).replace('.', ',')} €</div>
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        ))
+      )}
     </Container>
   );
 }
