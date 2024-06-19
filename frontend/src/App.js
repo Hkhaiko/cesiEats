@@ -7,11 +7,13 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import DeliveryDashboard from "./components/DeliveryDashboard";
 
 function App() {
   return (
     <AuthProvider>
       <Router>
+        
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -19,10 +21,12 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
+                <DeliveryDashboard/>
                 <HomePage />
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/order"
             element={

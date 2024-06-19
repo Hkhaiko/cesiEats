@@ -3,12 +3,16 @@
 .home-page {
     background-color: #f8f9fa;
     min-height: 100vh;
-    padding-top: 20px;
   }
   
   .logo {
     width: 100px;
     height: auto;
+  }
+
+  .logo-large {
+    width: 150px; /* Ajustez la taille selon vos besoins */
+    height: auto; /* Pour maintenir le ratio */
   }
   
   .card {
@@ -19,9 +23,9 @@
   .card-text {
     font-size: 1.2rem;
   }
-  
-  button {
-    border-radius: 10px;
-    font-size: 1.1rem;
-  }
-  
+    
+    button {
+      border-radius: 10px;
+      font-size: 1.1rem;
+    }
+    

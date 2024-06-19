@@ -1,43 +1,51 @@
 /* src/pages/OrderPage.css */
+
 .order-page {
-    padding: 20px;
-  }
-  
-  .order-page .card {
-    margin: 10px 0;
-  }
-  
-  .order-id {
-    font-size: 1.5rem; /* Taille plus grande pour le numéro de commande */
-    font-weight: bold;
-    margin-bottom: 15px; /* Ajout de marge inférieure */
-  }
-  
-  .order-details {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px; /* Augmente la marge supérieure */
-  }
-  
-  .order-detail-item {
-    flex: 1;
-    text-align: center;
-    margin-right: 10px; /* Ajuste la marge entre les éléments */
-  }
-  
-  .order-detail-item:last-child {
-    margin-right: 0;
-  }
-  
-  .order-details .revenue {
-    color: green; /* Revenus en vert */
-  }
-  
-  .logo {
-    width: 50px; /* Ajuster la taille du logo selon vos besoins */
-  }
-  
-  .profile-button .profile-icon {
-    width: 40px; /* Ajuster la taille de l'icône de profil selon vos besoins */
-  }
-  
+  padding: 20px;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.logo {
+  width: 100px; /* Ajuster la taille du logo selon vos besoins */
+}
+
+.profile-button .profile-icon {
+  width: 80px; /* Ajuster la taille de l'icône de profil selon vos besoins */
+}
+
+.return-button {
+  width: 150px; /* Largeur fixe pour le bouton Retour */
+  font-weight: bold;
+  margin-bottom: 20px; /* Espacement sous le bouton Retour */
+}
+
+.card {
+  margin-top: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.order-details {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.order-detail-item {
+  flex: 1;
+  text-align: center;
+}
+
+.order-detail-item:not(:last-child) {
+  margin-right: 10px; /* Ajustement de la marge entre les éléments */
+}
+
+.order-details .revenue {
+  color: green; /* Couleur des revenus en vert */
+}

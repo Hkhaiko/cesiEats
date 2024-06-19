@@ -1,14 +1,15 @@
-// src/pages/HomePage.js
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Container, Row, Col, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import './HomePage.css';
+import './HomePage.css'; // Assurez-vous d'ajuster les styles ici si nécessaire
+
+// Import du nouveau chemin pour votre logo
 
 function HomePage() {
+  const logo ="logo.png"
   const navigate = useNavigate();
-  const [userId, setUserId] = useState(null);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,7 +18,6 @@ function HomePage() {
     const userIdFromCookie = Cookies.get('deliveryId');
     console.log('UserID from cookie:', userIdFromCookie);
     if (userIdFromCookie) {
-      setUserId(userIdFromCookie);
       fetchUserData(userIdFromCookie);
     } else {
       setLoading(false);
@@ -46,7 +46,7 @@ function HomePage() {
     const newStatus = userData.status === 'active' ? 'inactive' : 'active';
 
     try {
-      const response = await axios.patch(`http://localhost:5003/api/delivery/${userId}`, {
+      await axios.patch(`http://localhost:5003/api/delivery/${userData._id}`, {
         status: newStatus,
       }, {
         headers: {
@@ -85,22 +85,9 @@ function HomePage() {
     <Container className="home-page">
       <Row className="justify-content-center mt-4">
         <Col xs={12} className="text-center">
-          <img src="frontend/src/img/logo.png" alt="Logo" className="mb-4 logo" />
+          {/* Utilisation de la classe 'logo-large' pour agrandir le logo */}
+          <img src={logo} alt="Logo" className="mb-4 logo-large" />
         </Col>
-        <Col xs={12} className="text-center">
-          {userId && (
-            <div className="mb-4">
-              <strong>User ID:</strong> {userId}
-            </div>
-          )}
-        </Col>
-        {userData && (
-          <Col xs={12} className="text-center">
-            <div className="mb-4">
-              <strong>User Data:</strong> {JSON.stringify(userData)}
-            </div>
-          </Col>
-        )}
         <Col xs={6} className="text-center">
           <Card className="mb-3">
             <Card.Body>
@@ -136,7 +123,7 @@ function HomePage() {
             className="w-100"
             onClick={handleStatusChange}
           >
-            {userData.status === 'active' ? 'PASSER HORS-LIGNE' : 'PASSER EN LIGNE'}
+            {userData.status === 'active' ? 'PASSER INACTIF' : 'PASSER EN LIGNE'}
           </Button>
         </Col>
       </Row>
