@@ -1,31 +1,42 @@
 /* src/pages/HomePage.css */
 
-.home-page {
-    background-color: #f8f9fa;
-    min-height: 100vh;
-  }
-  
-  .logo {
-    width: 100px;
-    height: auto;
-  }
+html, body {
+  height: 100%;
+  margin: 0;
+}
 
-  .logo-large {
-    width: 150px; /* Ajustez la taille selon vos besoins */
-    height: auto; /* Pour maintenir le ratio */
-  }
-  
-  .card {
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .card-text {
-    font-size: 1.2rem;
-  }
-    
-    button {
-      border-radius: 10px;
-      font-size: 1.1rem;
-    }
-    
+.home-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  min-height: 100vh;
+  padding: 0;
+}
+
+.logo {
+  width: 100px;
+  height: auto;
+}
+
+.logo-large {
+  width: 150px; /* Ajustez la taille selon vos besoins */
+  height: auto; /* Pour maintenir le ratio */
+}
+
+.card {
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.card-text {
+  font-size: 1.2rem;
+}
+
+button {
+  border-radius: 10px;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}

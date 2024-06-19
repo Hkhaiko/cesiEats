@@ -6,9 +6,9 @@ import axios from 'axios';
 import './HomePage.css'; // Assurez-vous d'ajuster les styles ici si nécessaire
 
 // Import du nouveau chemin pour votre logo
+const logo = "logo.png";
 
 function HomePage() {
-  const logo ="logo.png"
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -83,11 +83,7 @@ function HomePage() {
 
   return (
     <Container className="home-page">
-      <Row className="justify-content-center mt-4">
-        <Col xs={12} className="text-center">
-          {/* Utilisation de la classe 'logo-large' pour agrandir le logo */}
-          <img src={logo} alt="Logo" className="mb-4 logo-large" />
-        </Col>
+      <Row className="mt-4">
         <Col xs={6} className="text-center">
           <Card className="mb-3">
             <Card.Body>
@@ -104,10 +100,14 @@ function HomePage() {
             </Card.Body>
           </Card>
         </Col>
-        <Col xs={12}>
-          <Button variant="light" className="w-100 mb-3" onClick={() => navigate('/profile')}>Modifier Profil</Button>
-          <Button variant="light" className="w-100 mb-3" onClick={() => navigate('/order')}>Historique des livraisons</Button>
-          <Button variant="light" className="w-100 mb-3">Code Parrainage</Button>
+        <Col xs={4}>
+          <Button variant="secondary" className="w-100 mb-3" onClick={() => navigate('/profile')}>Modifier Profil</Button>
+        </Col>
+        <Col xs={4}>
+          <Button variant="secondary" className="w-100 mb-3" onClick={() => navigate('/order')}>Historique des livraisons</Button>
+        </Col>
+        <Col xs={4}>
+          <Button variant="secondary" className="w-100 mb-3">Code Parrainage</Button>
         </Col>
         <Col xs={12} className="text-center">
           <Card className="mb-3">

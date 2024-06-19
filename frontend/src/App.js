@@ -8,29 +8,33 @@ import Register from "./components/Register";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import DeliveryDashboard from "./components/DeliveryDashboard";
+import Header from "./components/Header";
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-        
+
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          
           <Route
             path="/"
             element={
               <ProtectedRoute>
-                <DeliveryDashboard/>
-                <HomePage />
+                <Header/>
+                <DeliveryDashboard />
+                <HomePage/>
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/order"
             element={
               <ProtectedRoute>
+                <Header/>
+                <DeliveryDashboard />
                 <OrderPage />
               </ProtectedRoute>
             }
@@ -39,6 +43,8 @@ function App() {
             path="/profile"
             element={
               <ProtectedRoute>
+                <Header/>
+                <DeliveryDashboard />
                 <ProfilePage />
               </ProtectedRoute>
             }

@@ -95,16 +95,6 @@ function ProfilePage() {
 
   return (
     <Container className="profile-page">
-      <Row className="align-items-center mb-4">
-        <Col xs={8}>
-          <img src={logo} alt="Logo" className="logo" />
-        </Col>
-        <Col xs={4} className="text-end">
-          <Button variant="link" className="profile-button" onClick={() => navigate('/profile')}>
-            <img src={profileLogo} alt="Profile" className="profile-icon" />
-          </Button>
-        </Col>
-      </Row>
       <Row className="justify-content-center mb-3">
         <Col xs={12} className="text-center">
           <Button
