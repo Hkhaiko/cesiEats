@@ -7,7 +7,7 @@ import './OrderPage.css';
 
 function OrderPage() {
   const logo ="logo.png"
-  const profileLogo="profile.svg"
+  const profileLogo="profile.png"
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

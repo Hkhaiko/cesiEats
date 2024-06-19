@@ -8,7 +8,7 @@ import './ProfilePage.css';
 
 function ProfilePage() {
   const logo ="logo.png"
-  const profileLogo="profile.svg"
+  const profileLogo="profile.png"
   const navigate = useNavigate();
   const [isEditable, setIsEditable] = useState(false);
   const [userId, setUserId] = useState(null);
