@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import OrderPage from "./pages/OrderPage";
-import ProfilePage from "./pages/ProfilePage";
+import ProfilPage from "./pages/ProfilPage";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import { AuthProvider } from "./context/AuthContext";
@@ -40,12 +40,12 @@ function App() {
             }
           />
           <Route
-            path="/profile"
+            path="/profil"
             element={
               <ProtectedRoute>
                 <Header/>
                 <DeliveryDashboard />
-                <ProfilePage />
+                <ProfilPage />
               </ProtectedRoute>
             }
           />

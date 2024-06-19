@@ -101,7 +101,7 @@ function HomePage() {
           </Card>
         </Col>
         <Col xs={4}>
-          <Button variant="secondary" className="w-100 mb-3" onClick={() => navigate('/profile')}>Modifier Profil</Button>
+          <Button variant="secondary" className="w-100 mb-3" onClick={() => navigate('/profil')}>Modifier Profil</Button>
         </Col>
         <Col xs={4}>
           <Button variant="secondary" className="w-100 mb-3" onClick={() => navigate('/order')}>Historique des livraisons</Button>

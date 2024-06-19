@@ -1,14 +1,14 @@
-// src/pages/ProfilePage.js
+// src/pages/profilPage.js
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Button, Form, Card, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import './ProfilePage.css';
+import './ProfilPage.css';
 
-function ProfilePage() {
+function ProfilPage() {
   const logo ="logo.png"
-  const profileLogo="profile.png"
+  const profilLogo="profil.png"
   const navigate = useNavigate();
   const [isEditable, setIsEditable] = useState(false);
   const [userId, setUserId] = useState(null);
@@ -69,7 +69,7 @@ function ProfilePage() {
         withCredentials: true,
       });
       setIsEditable(false);
-      alert('Profile updated successfully');
+      alert('profil updated successfully');
     } catch (err) {
       setError(err.message);
     }
@@ -77,7 +77,7 @@ function ProfilePage() {
 
   if (loading) {
     return (
-      <Container className="profile-page text-center">
+      <Container className="profil-page text-center">
         <Spinner animation="border" role="status">
           <span className="visually-hidden">Loading...</span>
         </Spinner>
@@ -87,19 +87,19 @@ function ProfilePage() {
 
   if (error) {
     return (
-      <Container className="profile-page text-center">
+      <Container className="profil-page text-center">
         <p>Erreur lors du chargement des données utilisateur : {error}</p>
       </Container>
     );
   }
 
   return (
-    <Container className="profile-page">
+    <Container className="profil-page">
       <Row className="justify-content-center">
         <Col xs={12} md={10} lg={10}>
           <Card>
             <Card.Body>
-              <Card.Title>Profile</Card.Title>
+              <Card.Title>Profil</Card.Title>
               <Form onSubmit={handleUpdate}>
                 <Form.Group controlId="formName" className="mb-3">
                   <Form.Label>Nom</Form.Label>
@@ -174,4 +174,4 @@ function ProfilePage() {
   );
 }
 
-export default ProfilePage;
+export default ProfilPage;

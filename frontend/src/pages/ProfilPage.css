@@ -1,6 +1,6 @@
-/* src/pages/ProfilePage.css */
+/* src/pages/profilPage.css */
 
-.profile-page {
+.profil-page {
   padding: 20px;
   min-height: 100vh;
   background-color: #ffffff;
@@ -10,7 +10,7 @@
   width: 100px; /* Ajuster la taille du logo selon vos besoins */
 }
 
-.profile-button .profile-icon {
+.profil-button .profil-icon {
   width: 80px; /* Ajuster la taille de l'icône de profil selon vos besoins */
 }
 

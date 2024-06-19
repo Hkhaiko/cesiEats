@@ -7,7 +7,7 @@ import './OrderPage.css';
 
 function OrderPage() {
   const logo ="logo.png"
-  const profileLogo="profile.png"
+  const profilLogo="profil.png"
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -57,9 +57,9 @@ function OrderPage() {
     );
   }
 
-  const navigateToProfile = () => {
+  const navigateToprofil = () => {
     // Naviguer vers la page de profil
-    navigate('/profile');
+    navigate('/profil');
   };
 
   return (
