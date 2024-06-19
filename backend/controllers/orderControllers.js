@@ -1,5 +1,12 @@
+const express = require("express");
 const axios = require("axios");
+const app = express();
 const Order = require("../models/orderModel");
+const http = require("http");
+const socketIo = require("socket.io");
+
+const server = http.createServer(app);
+const io = socketIo(server);
 
 // Récupérer toutes les commandes d'un restaurant spécifique
 const getOrdersByRestaurant = async (req, res) => {
@@ -52,6 +59,9 @@ const createOrder = async (req, res) => {
       createdAt: new Date(),
     });
     const savedOrder = await newOrder.save();
+
+    // Émettre un événement pour notifier les clients (livreurs)
+    io.emit("newOrder", savedOrder);
 
     res.status(201).json({
       message: "Order created successfully",
