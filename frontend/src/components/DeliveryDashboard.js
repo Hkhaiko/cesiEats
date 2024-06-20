@@ -19,6 +19,10 @@ const DeliveryDashboard = ({ delivererId }) => {
     const [restaurantAddress, setRestaurantAddress] = useState('');
     const [deliveryAddress, setDeliveryAddress] = useState('');
     const [positions, setPositions] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const tenthOfTotalPrice = selectedOrder ? parseFloat((selectedOrder.totalPrice / 10).toFixed(2)) : null;
+    const [userData, setUserData] = useState(null);
 
     useEffect(() => {
         socket.on('connect', () => {
@@ -28,19 +32,24 @@ const DeliveryDashboard = ({ delivererId }) => {
         const userIdFromCookie = Cookies.get('deliveryId');
         if (userIdFromCookie) {
             setUserId(userIdFromCookie);
+            fetchUserData(userIdFromCookie);
         } else {
             setLoading(false);
         }
 
+        
         socket.on('newOrder', (order) => {
             if (order.status === 'pending') {
                 setOrders((prevOrders) => [...prevOrders, order]);
                 setSelectedOrder(order);
-                setShowModal(true);
-                setDeliveryAddress(order.address); // Mettre à jour l'adresse de livraison
-                fetchRestaurantAddress(order.restaurantId); // Appeler la fonction pour récupérer l'adresse du restaurant
-                console.log(restaurantAddress, deliveryAddress)
-                fetchCoordinates(restaurantAddress, deliveryAddress); // Appeler la fonction pour récupérer les coordonnées et tracer l'itinéraire
+                console.log(userData.status)
+                if (userData.status ==='active'){
+                    setShowModal(true);
+                    setDeliveryAddress(order.address); // Mettre à jour l'adresse de livraison
+                    fetchRestaurantAddress(order.restaurantId); // Appeler la fonction pour récupérer l'adresse du restaurant
+                    console.log(restaurantAddress, deliveryAddress)
+                    fetchCoordinates(restaurantAddress, deliveryAddress); // Appeler la fonction pour récupérer les coordonnées et tracer l'itinéraire
+                }
             }
         });
 
@@ -55,6 +64,22 @@ const DeliveryDashboard = ({ delivererId }) => {
             socket.off('disconnect');
         };
     }, []);
+
+    const fetchUserData = async (id) => {
+        try {
+          const response = await axios.get(`${BASE_URL.delivery}/api/delivery/${id}`, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+          });
+          setUserData(response.data);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
 
     const fetchRestaurantAddress = async (restaurantId) => {
         try {
@@ -140,12 +165,27 @@ const DeliveryDashboard = ({ delivererId }) => {
                   setOrders(orders.map(order => order._id === selectedOrder._id ? updatedOrder : order));
                   setShowThirdModal(false); // Afficher la deuxième popup après avoir accepté
                   pay()
+                  addDeliverytohistory()
               })
               .catch(error => {
                   console.error('Error:', error);
               });
       }
     };
+
+
+    const addDeliverytohistory = async () => {
+        const response = await axios.post(`${BASE_URL.delivery}/api/delivery/history`, {
+            deliveryPersonId:userId,
+            price:selectedOrder.totalPrice,
+            status:"completed",
+        },{
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+        });
+    }
           
     const pay = async () => {
       if (selectedOrder) {
@@ -162,8 +202,8 @@ const DeliveryDashboard = ({ delivererId }) => {
           const currentScore = response.data.score;
     
           // Incrémenter les valeurs de 10
-          const newIncome = currentIncome + 10;
-          const newScore = currentScore + 10;
+          const newIncome = currentIncome + tenthOfTotalPrice;
+          const newScore = currentScore + 1;
     
           // Envoyer les nouvelles valeurs via une requête PUT
           await axios.put(`${BASE_URL.delivery}/api/delivery/${userId}`, {
@@ -193,21 +233,16 @@ const DeliveryDashboard = ({ delivererId }) => {
 
     return (
         <div>
-            <h1>Pending Orders</h1>
-            <ul>
-                {orders.map((order) => (
-                    <li key={order._id}>{order._id} - {order.items.map(item => item.name).join(', ')}</li>
-                ))}
-            </ul>
-
             {/* Modal pour afficher les détails de la commande */}
             <Modal show={showModal} onHide={() => setShowModal(false)} centered>
                 <Modal.Header closeButton>
-                    <Modal.Title>New Pending Order</Modal.Title>
+                    <Modal.Title>Nouvelle Commande</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <p>Order ID: {selectedOrder ? selectedOrder._id : ''}</p>
-                    <p>Items: {selectedOrder ? selectedOrder.items.map(item => item.name).join(', ') : ''}</p>
+                    <p>Adresse du restaurant: {restaurantAddress}</p>
+                    <p>Adresse de livraison {deliveryAddress}</p>
+                    <p>Revenu {tenthOfTotalPrice} €</p>
+
                     <Alert variant="info">Accepter ou refuser cette commande ?</Alert>
                 </Modal.Body>
                 <Modal.Footer>

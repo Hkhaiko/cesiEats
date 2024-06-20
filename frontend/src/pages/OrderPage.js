@@ -79,10 +79,9 @@ function OrderPage() {
                 <Card.Body>
                   <Card.Title className="order-id">Commande #{order._id}</Card.Title>
                   <Card.Text className="order-details">
-                    <div className="order-detail-item">Distance : {order.distance}</div>
                     <div className="order-detail-item">Status : {order.status}</div>
                     <div className="order-detail-item">Date de livraison : {new Date(order.deliveryDate).toLocaleDateString()}</div>
-                    <div className="order-detail-item revenue">Revenus : {parseFloat(order.price).toFixed(2).replace('.', ',')} €</div>
+                    <div className="order-detail-item revenue">Revenus : {parseFloat((order.price / 10).toFixed(2))} €</div>
                   </Card.Text>
                 </Card.Body>
               </Card>

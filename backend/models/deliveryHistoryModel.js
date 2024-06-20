@@ -11,14 +11,10 @@ const deliveryHistorySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    distance: {
-      type: String,
-      require: true,
-    },
     status: {
       type: String,
       enum: ["pending", "accepted", "in-progress", "completed", "cancelled"],
-      default: "pending",
+      default: "completed",
     },
     deliveryDate: {
       type: Date,
