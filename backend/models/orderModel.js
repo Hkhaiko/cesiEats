@@ -14,6 +14,10 @@ const orderSchema = new Schema({
     type: String,
     default: "not-yet",
   },
+  address: {
+    type: String,
+    required: true,
+  },
   items: [
     {
       itemId: Schema.Types.ObjectId,
@@ -28,7 +32,7 @@ const orderSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ["pending", "in progress", "completed"],
+    enum: ["pending", "in progress","on way", "completed"],
     default: "pending",
   },
   createdAt: {

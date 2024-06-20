@@ -42,10 +42,11 @@ const getOrderById = async (req, res) => {
 
 const createOrder = async (req, res) => {
   try {
-    const { restaurantId, customerId, items, totalPrice, status } = req.body;
+    const { restaurantId, customerId,address, items, totalPrice, status } = req.body;
     const newOrder = new Order({
       restaurantId,
       customerId,
+      address,
       items,
       totalPrice,
       status: status || "pending",
@@ -73,7 +74,7 @@ const updateOrder = async (req, res) => {
     const orderId = req.params.id;
 
     // Validation du statut
-    if (!["in progress", "completed", "pending"].includes(status)) {
+    if (!["in progress","on way", "completed", "pending"].includes(status)) {
       return res.status(400).json({ message: "Invalid status value" });
     }
 
