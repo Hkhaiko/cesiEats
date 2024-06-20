@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import './OrderPage.css';
+import { BASE_URL } from '../config'; // Importation de BASE_URL depuis le fichier de configuration
 
 function OrderPage() {
   const logo ="logo.png"
@@ -25,7 +26,7 @@ function OrderPage() {
 
   const fetchOrders = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:5003/api/delivery/history/${id}`, {
+      const response = await axios.get(`${BASE_URL.delivery}/api/delivery/history/${id}`, {
         headers: {
           'Content-Type': 'application/json',
         },

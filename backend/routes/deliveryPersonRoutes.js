@@ -229,11 +229,9 @@ router.post("/delivery/login", deliveryPersonControllers.login);
  *         content:
  *           application/json:
  */
-router.put(
-  "/delivery/:id",
-  auth,
-  deliveryPersonControllers.updateDeliveryPerson
-);
+router.put("/delivery/:id",deliveryPersonControllers.updateDeliveryPerson);
+
+
 router.post("/delivery/logout", auth, deliveryPersonControllers.logout);
 
 module.exports = router;

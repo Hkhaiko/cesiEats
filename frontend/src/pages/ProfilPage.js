@@ -4,11 +4,10 @@ import { Container, Row, Col, Button, Form, Card, Spinner } from 'react-bootstra
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { BASE_URL } from '../config'; // Importation de BASE_URL depuis le fichier de configuration
 import './ProfilPage.css';
 
 function ProfilPage() {
-  const logo ="logo.png"
-  const profilLogo="profil.png"
   const navigate = useNavigate();
   const [isEditable, setIsEditable] = useState(false);
   const [userId, setUserId] = useState(null);
@@ -33,7 +32,7 @@ function ProfilPage() {
 
   const fetchUserData = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:5003/api/delivery/${id}`, {
+      const response = await axios.get(`${BASE_URL.delivery}/api/delivery/${id}`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -62,14 +61,14 @@ function ProfilPage() {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5003/api/delivery/${userId}`, userData, {
+      await axios.put(`${BASE_URL.delivery}/api/delivery/${userId}`, userData, {
         headers: {
           'Content-Type': 'application/json',
         },
         withCredentials: true,
       });
       setIsEditable(false);
-      alert('profil updated successfully');
+      alert('Profil mis à jour avec succès');
     } catch (err) {
       setError(err.message);
     }
@@ -79,7 +78,7 @@ function ProfilPage() {
     return (
       <Container className="profil-page text-center">
         <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
+          <span className="visually-hidden">Chargement...</span>
         </Spinner>
       </Container>
     );

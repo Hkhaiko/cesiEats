@@ -3,7 +3,10 @@ import { Button, Card, Container, Row, Col, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { BASE_URL } from '../config'; // Importation de BASE_URL depuis le fichier de configuration
 import './HomePage.css'; // Assurez-vous d'ajuster les styles ici si nécessaire
+import io from 'socket.io-client';
+const socket = io(BASE_URL.delivery);
 
 // Import du nouveau chemin pour votre logo
 const logo = "logo.png";
@@ -15,18 +18,26 @@ function HomePage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const userIdFromCookie = Cookies.get('deliveryId');
-    console.log('UserID from cookie:', userIdFromCookie);
-    if (userIdFromCookie) {
-      fetchUserData(userIdFromCookie);
-    } else {
-      setLoading(false);
-    }
+
+    // Set up socket listener
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+
+    socket.on('updateDelivery', (updatedDeliveryPerson) => {
+      console.log('Received update from socket:', updatedDeliveryPerson);
+        setUserData(updatedDeliveryPerson);
+    });
+
+    // Cleanup socket listener on component unmount
+    return () => {
+      socket.off('updateDelivery');
+    };
   }, []);
 
   const fetchUserData = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:5003/api/delivery/${id}`, {
+      const response = await axios.get(`${BASE_URL.delivery}/api/delivery/${id}`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -46,7 +57,7 @@ function HomePage() {
     const newStatus = userData.status === 'active' ? 'inactive' : 'active';
 
     try {
-      await axios.patch(`http://localhost:5003/api/delivery/${userData._id}`, {
+      await axios.patch(`${BASE_URL.delivery}/api/delivery/${userData._id}`, {
         status: newStatus,
       }, {
         headers: {

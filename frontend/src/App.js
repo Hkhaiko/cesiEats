@@ -10,11 +10,11 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import DeliveryDashboard from "./components/DeliveryDashboard";
 import Header from "./components/Header";
 
+
 function App() {
   return (
     <AuthProvider>
       <Router>
-
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

@@ -7,6 +7,10 @@ const cookieParser = require("cookie-parser");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 const config = require("./config/config");
+const http = require("http");
+const socket = require("./config/socket");
+
+
 
 
 const corsOptions = {
@@ -23,6 +27,15 @@ app.use(cors(corsOptions));
 
 // Connect to MongoDB
 config.connectToDatabase();
+
+
+const server = http.createServer(app);
+const io = socket.init(server); // Initialiser io
+
+// Configuration de Socket.io
+io.on("connection", (socket) => {
+  console.log("New client connected", socket.id);
+});
 
 //swagger
 const swaggerOptions = {
@@ -53,4 +66,4 @@ app.use("/api", deliveryHistoryRoutes);
 app.get("/", (req, res) => res.send("API delivery is running"));
 
 const PORT = config.port;
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server started on port ${PORT}`));

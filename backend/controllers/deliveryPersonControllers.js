@@ -1,6 +1,7 @@
 const DeliveryPerson = require("../models/deliveryPersonModel");
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
+const socket = require("../config/socket");
 
 dotenv.config();
 
@@ -154,6 +155,9 @@ exports.updateDeliveryPerson = async (req, res) => {
     if (!updatedDeliveryPerson) {
       return res.status(404).json({ message: "Delivery Person not found" });
     }
+    const io = socket.getIo();
+    io.emit("updateDelivery", req.body);
+
     res.status(200).json(updatedDeliveryPerson);
   } catch (error) {
     res.status(400).json({ message: error.message });
