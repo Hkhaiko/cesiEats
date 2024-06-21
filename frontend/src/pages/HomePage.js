@@ -112,7 +112,7 @@ function HomePage() {
           <Card className="mb-3">
             <Card.Body>
               <Card.Text>Vous êtes actuellement</Card.Text>
-              <Card.Text>{userData.status === 'active' ? 'Actif' : 'Inactif'}</Card.Text>
+              <Card.Text>{userData.status === 'active' ? 'Inactif' : 'Actif'}</Card.Text>
             </Card.Body>
           </Card>
         </Col>

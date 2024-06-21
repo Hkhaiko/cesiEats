@@ -283,7 +283,7 @@ const DeliveryDashboard = ({ delivererId }) => {
               handleStatusChange();
             }}
           >
-            {userData && userData.status === 'active' ? 'Passer Inactif' : 'Passer Actif'}
+            {userData && userData.status === 'active' ? 'Passer Actif' : 'Passer Inactif'}
           </Button>
         </Col>
       </Row>
