@@ -133,10 +133,9 @@ const DeliveryDashboard = ({ delivererId }) => {
           // Mettre à jour localement le statut utilisateur
           setUserData({ ...userData, status: newStatus });
     
-          alert('Statut mis à jour avec succès');
         } catch (err) {
           console.error('Error updating status:', err);
-          alert('Erreur lors de la mise à jour du statut');
+
         }
       };
 

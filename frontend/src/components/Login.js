@@ -22,7 +22,6 @@ const LoginPage = () => {
     try {
       const response = await login(credentials);
       loginUser(response.data);
-      alert("Login successful");
       navigate("/");
     } catch (err) {
       console.error(err);

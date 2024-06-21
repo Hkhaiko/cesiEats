@@ -67,7 +67,6 @@ function ProfilPage() {
         withCredentials: true,
       });
       setIsEditable(false);
-      alert('Profil mis à jour avec succès');
     } catch (err) {
       setError(err.message);
     }

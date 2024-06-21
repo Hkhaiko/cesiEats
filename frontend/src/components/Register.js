@@ -21,7 +21,6 @@ const RegisterPage = () => {
     e.preventDefault();
     try {
       await register(formData);
-      alert("Registration successful");
       navigate("/login");
     } catch (err) {
       console.error(err);
