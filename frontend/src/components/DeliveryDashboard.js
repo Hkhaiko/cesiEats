@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Button, Alert } from 'react-bootstrap';
+import { Modal, Button, Alert, Card, Container, Row, Col, Spinner } from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css'; // Assurez-vous d'importer le CSS de Leaflet
+import 'leaflet/dist/leaflet.css';
 import io from 'socket.io-client';
-import { BASE_URL } from '../config'; // Assurez-vous d'importer correctement BASE_URL depuis votre fichier de configuration
+import { BASE_URL } from '../config';
+const socketEndpoint = BASE_URL.orders;
 
-const socket = io(BASE_URL.orders);
 
 const DeliveryDashboard = ({ delivererId }) => {
+    const [socket, setSocket] = useState(null);
     const [orders, setOrders] = useState([]);
     const [showModal, setShowModal] = useState(false);
-    const [showSecondModal, setShowSecondModal] = useState(false); // State pour la deuxième popup
-    const [showThirdModal, setShowThirdModal] = useState(false); // State pour la deuxième popup
+    const [showSecondModal, setShowSecondModal] = useState(false); 
+    const [showThirdModal, setShowThirdModal] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [userId, setUserId] = useState(null);
     const [restaurantAddress, setRestaurantAddress] = useState('');
@@ -25,45 +26,60 @@ const DeliveryDashboard = ({ delivererId }) => {
     const [userData, setUserData] = useState(null);
 
     useEffect(() => {
-        socket.on('connect', () => {
-            console.log('Connected to server');
-        });
-
-        const userIdFromCookie = Cookies.get('deliveryId');
-        if (userIdFromCookie) {
-            setUserId(userIdFromCookie);
-            fetchUserData(userIdFromCookie);
-        } else {
-            setLoading(false);
-        }
-
-        
-        socket.on('newOrder', (order) => {
-            if (order.status === 'pending') {
+        if (socket) {
+            socket.on('connect', () => {
+              console.log('Connected to server');
+            });
+      
+            socket.on('disconnect', () => {
+              console.log('Disconnected from server');
+            });
+      
+            socket.on('newOrder', (order) => {
+              if (order.status === 'pending') {
                 setOrders((prevOrders) => [...prevOrders, order]);
                 setSelectedOrder(order);
-                console.log(userData.status)
-                if (userData.status ==='active'){
-                    setShowModal(true);
-                    setDeliveryAddress(order.address); // Mettre à jour l'adresse de livraison
-                    fetchRestaurantAddress(order.restaurantId); // Appeler la fonction pour récupérer l'adresse du restaurant
-                    console.log(restaurantAddress, deliveryAddress)
-                    fetchCoordinates(restaurantAddress, deliveryAddress); // Appeler la fonction pour récupérer les coordonnées et tracer l'itinéraire
-                }
-            }
-        });
-
-        socket.on('disconnect', () => {
-            console.log('Disconnected from server');
-        });
-
-        // Nettoyage du socket lors du démontage du composant
-        return () => {
-            socket.off('newOrder');
-            socket.off('connect');
-            socket.off('disconnect');
+                setShowModal(true);
+                setDeliveryAddress(order.address);
+                fetchRestaurantAddress(order.restaurantId);
+                // Vous pouvez appeler fetchCoordinates ici si besoin
+              }
+            });
+      
+            return () => {
+              socket.disconnect();
+              socket.off('newOrder');
+              socket.off('connect');
+              socket.off('disconnect');
+            };
+          }
+        }, [socket]);
+      
+        const connectSocket = () => {
+          const newSocket = io(socketEndpoint);
+          setSocket(newSocket);
+      
+          const userIdFromCookie = Cookies.get('deliveryId');
+          if (userIdFromCookie) {
+            setUserId(userIdFromCookie);
+            fetchUserData(userIdFromCookie);
+          } else {
+            setLoading(false);
+          }
         };
-    }, []);
+      
+        const disconnectSocket = () => {
+          if (socket) {
+            socket.disconnect();
+            setSocket(null);
+            setOrders([]);
+            setSelectedOrder(null);
+            setShowModal(false);
+            setDeliveryAddress('');
+            setRestaurantAddress('');
+            setUserData(null);
+          }
+        };
 
     const fetchUserData = async (id) => {
         try {
@@ -87,15 +103,42 @@ const DeliveryDashboard = ({ delivererId }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                withCredentials: true, // Assurez-vous que cela est correctement configuré selon votre API
+                withCredentials: true,
             });
-            setRestaurantAddress(response.data.address); // Mettre à jour l'adresse du restaurant dans l'état
+            setRestaurantAddress(response.data.address);
             console.log(restaurantAddress)
             console.log(deliveryAddress)
         } catch (error) {
             console.log('Error fetching restaurant address:', error);
         }
     };
+
+    const handleStatusChange = async () => {
+        if (!userData) return;
+    
+        const newStatus = userData.status === 'active' ? 'inactive' : 'active';
+    
+        try {
+          await axios.patch(
+            `${BASE_URL.delivery}/api/delivery/${userData._id}`,
+            { status: newStatus },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              withCredentials: true,
+            }
+          );
+    
+          // Mettre à jour localement le statut utilisateur
+          setUserData({ ...userData, status: newStatus });
+    
+          alert('Statut mis à jour avec succès');
+        } catch (err) {
+          console.error('Error updating status:', err);
+          alert('Erreur lors de la mise à jour du statut');
+        }
+      };
 
     const fetchCoordinates = async (restaurantAddress, deliveryAddress) => {
         try {
@@ -123,7 +166,7 @@ const DeliveryDashboard = ({ delivererId }) => {
                     const updatedOrder = response.data.order;
                     setOrders(orders.map(order => order._id === selectedOrder._id ? updatedOrder : order));
                     setShowModal(false);
-                    setShowSecondModal(true); // Afficher la deuxième popup après avoir accepté
+                    setShowSecondModal(true);
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -145,8 +188,8 @@ const DeliveryDashboard = ({ delivererId }) => {
               .then(response => {
                   const updatedOrder = response.data.order;
                   setOrders(orders.map(order => order._id === selectedOrder._id ? updatedOrder : order));
-                  setShowSecondModal(false); // Afficher la deuxième popup après avoir accepté
-                  setShowThirdModal(true); // Afficher la deuxième popup après avoir accepté
+                  setShowSecondModal(false);
+                  setShowThirdModal(true);
               })
               .catch(error => {
                   console.error('Error:', error);
@@ -163,7 +206,7 @@ const DeliveryDashboard = ({ delivererId }) => {
               .then(response => {
                   const updatedOrder = response.data.order;
                   setOrders(orders.map(order => order._id === selectedOrder._id ? updatedOrder : order));
-                  setShowThirdModal(false); // Afficher la deuxième popup après avoir accepté
+                  setShowThirdModal(false);
                   pay()
                   addDeliverytohistory()
               })
@@ -190,7 +233,6 @@ const DeliveryDashboard = ({ delivererId }) => {
     const pay = async () => {
       if (selectedOrder) {
         try {
-          // Faire une requête GET pour récupérer les valeurs actuelles de score et income
           const response = await axios.get(`${BASE_URL.delivery}/api/delivery/${userId}`, {
             headers: {
               'Content-Type': 'application/json',
@@ -201,11 +243,9 @@ const DeliveryDashboard = ({ delivererId }) => {
           const currentIncome = response.data.income;
           const currentScore = response.data.score;
     
-          // Incrémenter les valeurs de 10
           const newIncome = currentIncome + tenthOfTotalPrice;
           const newScore = currentScore + 1;
     
-          // Envoyer les nouvelles valeurs via une requête PUT
           await axios.put(`${BASE_URL.delivery}/api/delivery/${userId}`, {
             income: newIncome,
             score: newScore,
@@ -221,19 +261,34 @@ const DeliveryDashboard = ({ delivererId }) => {
       }
     };
     
-
-
-
-
-    // Style pour la carte Leaflet
     const mapContainerStyle = {
-        height: '300px',  // Ajustez la hauteur selon vos besoins
-        width: '100%'     // Ajustez la largeur selon vos besoins
+        height: '300px',  
+        width: '100%'
     };
 
     return (
+        
         <div>
-            {/* Modal pour afficher les détails de la commande */}
+ <Container>
+      <Row className="mt-4">
+        <Col xs={12} className="text-center">
+          <Button
+            variant="primary"
+            className="w-50"
+            onClick={() => {
+              if (socket) {
+                disconnectSocket();
+              } else {
+                connectSocket();
+              }
+              handleStatusChange();
+            }}
+          >
+            {userData && userData.status === 'active' ? 'Passer Inactif' : 'Passer Actif'}
+          </Button>
+        </Col>
+      </Row>
+    </Container>
             <Modal show={showModal} onHide={() => setShowModal(false)} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Nouvelle Commande</Modal.Title>
@@ -251,7 +306,6 @@ const DeliveryDashboard = ({ delivererId }) => {
                 </Modal.Footer>
             </Modal>
 
-            {/* Deuxième Modal pour afficher l'adresse du restaurant et la carte */}
             <Modal show={showSecondModal} centered size="lg">
                 <Modal.Header>
                     <Modal.Title>Récuperation de la commande</Modal.Title>
@@ -259,7 +313,6 @@ const DeliveryDashboard = ({ delivererId }) => {
                 <Modal.Body>
                     <p>Adresse du restaurant: {restaurantAddress}</p>
                     <p>Adresse de livraison {deliveryAddress}</p>
-                    {/* Carte Leaflet avec itinéraire */}
                     <div style={mapContainerStyle}>
                         <MapContainer center={positions.length > 0 ? positions[0] : [0, 0]} zoom={13} style={{ height: '100%', width: '100%' }}>
                             <TileLayer
@@ -291,7 +344,6 @@ const DeliveryDashboard = ({ delivererId }) => {
                 <Modal.Body>
                     <p>Adresse du restaurant: {restaurantAddress}</p>
                     <p>Adresse de livraison {deliveryAddress}</p>
-                    {/* Carte Leaflet avec itinéraire */}
                     <div style={mapContainerStyle}>
                         <MapContainer center={positions.length > 0 ? positions[0] : [0, 0]} zoom={13} style={{ height: '100%', width: '100%' }}>
                             <TileLayer

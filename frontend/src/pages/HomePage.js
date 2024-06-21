@@ -3,19 +3,18 @@ import { Button, Card, Container, Row, Col, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import { BASE_URL } from '../config'; // Importation de BASE_URL depuis le fichier de configuration
-import './HomePage.css'; // Assurez-vous d'ajuster les styles ici si nécessaire
+import { BASE_URL } from '../config';
+import './HomePage.css';
 import io from 'socket.io-client';
 
 const socket = io(BASE_URL.delivery);
 
-// Import du nouveau chemin pour votre logo
 const logo = "logo.png";
 
 function HomePage() {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
-  const [selectedOrder, setSelectedOrder] = useState(null); // Example state for selected order
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [orders, setOrders] = useState([]);
@@ -32,7 +31,6 @@ function HomePage() {
       setLoading(false);
     }
 
-    // Set up socket listener
     socket.on('connect', () => {
       console.log('Connected to server');
     });
@@ -49,14 +47,13 @@ function HomePage() {
         setOrders((prevOrders) => [...prevOrders, order]);
         setSelectedOrder(order);
         setShowModal(true);
-        setDeliveryAddress(order.address); // Mettre à jour l'adresse de livraison
-        fetchRestaurantAddress(order.restaurantId); // Appeler la fonction pour récupérer l'adresse du restaurant
+        setDeliveryAddress(order.address);
+        fetchRestaurantAddress(order.restaurantId);
         console.log(restaurantAddress, deliveryAddress);
-        fetchCoordinates(restaurantAddress, deliveryAddress); // Appeler la fonction pour récupérer les coordonnées et tracer l'itinéraire
+        fetchCoordinates(restaurantAddress, deliveryAddress);
       }
     });
 
-    // Cleanup socket listener on component unmount
     return () => {
       socket.off('updateDelivery');
       socket.off('newOrder');
@@ -80,38 +77,14 @@ function HomePage() {
   };
 
   const fetchRestaurantAddress = async (restaurantId) => {
-    // Logic to fetch restaurant address by restaurantId
-    // For demonstration purposes, we're setting a static address
     setRestaurantAddress('123 Restaurant St, Food City');
   };
 
   const fetchCoordinates = (restaurantAddress, deliveryAddress) => {
-    // Logic to fetch coordinates and trace the route
     console.log('Fetching coordinates for', restaurantAddress, deliveryAddress);
   };
 
-  const handleStatusChange = async () => {
-    if (!userData) return;
 
-    const newStatus = userData.status === 'active' ? 'inactive' : 'active';
-
-    try {
-      await axios.patch(`${BASE_URL.delivery}/api/delivery/${userData._id}`, {
-        status: newStatus,
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true,
-      });
-
-      // No need to manually update userData here, it will be updated by the socket event
-      alert('Status updated successfully');
-    } catch (err) {
-      setError(err.message);
-      alert('Error updating status');
-    }
-  };
 
   if (loading) {
     return (
@@ -135,6 +108,14 @@ function HomePage() {
   return (
     <Container className="home-page">
       <Row className="mt-4">
+        <Col xs={12} className="text-center">
+          <Card className="mb-3">
+            <Card.Body>
+              <Card.Text>Vous êtes actuellement</Card.Text>
+              <Card.Text>{userData.status === 'active' ? 'Actif' : 'Inactif'}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
         <Col xs={6} className="text-center">
           <Card className="mb-3">
             <Card.Body>
@@ -159,23 +140,6 @@ function HomePage() {
         </Col>
         <Col xs={4}>
           <Button variant="secondary" className="w-100 mb-3">Code Parrainage</Button>
-        </Col>
-        <Col xs={12} className="text-center">
-          <Card className="mb-3">
-            <Card.Body>
-              <Card.Text>Vous êtes actuellement</Card.Text>
-              <Card.Text>{userData.status === 'active' ? 'Actif' : 'Inactif'}</Card.Text>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col xs={12}>
-          <Button
-            variant={userData.status === 'active' ? 'danger' : 'success'}
-            className="w-100"
-            onClick={handleStatusChange}
-          >
-            {userData.status === 'active' ? 'PASSER INACTIF' : 'PASSER EN LIGNE'}
-          </Button>
         </Col>
       </Row>
     </Container>

@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Navbar, Nav, Container, Button, Offcanvas } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { HouseDoorFill, PersonCircle, CartFill } from 'react-bootstrap-icons'; // Importation des icônes
+import { HouseDoorFill, PersonCircle, CartFill } from 'react-bootstrap-icons';
 import { AuthContext } from '../context/AuthContext'; 
 
 const Header = () => {
@@ -18,7 +18,6 @@ const Header = () => {
 
   return (
     <>
-      {/* Navbar en haut pour les écrans de bureau */}
       <Navbar bg="dark" variant="dark" expand="lg" sticky="top" className="d-none d-lg-block">
         <Container fluid>
           <Navbar.Brand as={Link} to="/">
@@ -42,7 +41,6 @@ const Header = () => {
         </Container>
       </Navbar>
 
-      {/* Navbar en bas pour les écrans mobiles */}
       <Navbar bg="dark" variant="dark" expand="sm" fixed="bottom" className="d-block d-lg-none">
         <Container fluid>
           <Navbar.Brand as={Link} to="/">

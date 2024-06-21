@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import './OrderPage.css';
-import { BASE_URL } from '../config'; // Importation de BASE_URL depuis le fichier de configuration
+import { BASE_URL } from '../config';
 
 function OrderPage() {
   const logo ="logo.png"
@@ -57,12 +57,6 @@ function OrderPage() {
       </Container>
     );
   }
-
-  const navigateToprofil = () => {
-    // Naviguer vers la page de profil
-    navigate('/profil');
-  };
-
   return (
     <Container className="order-page">
       {orders.length === 0 ? (

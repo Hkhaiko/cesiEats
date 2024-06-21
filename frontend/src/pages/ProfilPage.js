@@ -1,10 +1,9 @@
-// src/pages/profilPage.js
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Button, Form, Card, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import { BASE_URL } from '../config'; // Importation de BASE_URL depuis le fichier de configuration
+import { BASE_URL } from '../config';
 import './ProfilPage.css';
 
 function ProfilPage() {
@@ -15,7 +14,7 @@ function ProfilPage() {
     name: '',
     email: '',
     phone: '',
-    password: '', // Added password field
+    password: '',
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

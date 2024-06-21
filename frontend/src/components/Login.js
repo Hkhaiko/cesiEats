@@ -21,9 +21,9 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       const response = await login(credentials);
-      loginUser(response.data); // Utiliser le contexte pour enregistrer l'utilisateur
+      loginUser(response.data);
       alert("Login successful");
-      navigate("/"); // Rediriger vers la page d'accueil après connexion
+      navigate("/");
     } catch (err) {
       console.error(err);
       setError("Error during login");
